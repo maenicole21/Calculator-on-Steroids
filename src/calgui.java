@@ -2,33 +2,45 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 
 public class calgui implements ActionListener {
 	
 	JFrame frame;
+	JMenuBar menubar;
+	JMenu file;
+	JMenuItem clear;
+	JMenuItem exit;
+	JMenu edit;
+	JMenuItem copy;
+	JMenuItem paste;
+	JMenu his;
+	JMenuItem exp;
+	JMenuItem imp;
 	JTextField textField;
 	JTextField secondField;
 	JTextField answerField;
 	JButton btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btnAdd, btnSub, btnMul, btnDiv, btnEq, btnClr, btnDel, btnDot, btnMplus, btnMminus, btnMrec, btnMemcl;
-	JComboBox<String>  operations;
+	JComboBox<String>  operations;	
 	String input = "" ;
 	String input2 = "";
 	String answer = "" ;
 	String error = "Error";
-	String[] ops = {"+", "-", "*", "/"}; 
+	String[] ops = {"","+", "-", "*", "/"}; 
 	String value = "";
+	String copied ="";
 	int isFirst = 0;
-	//Array<Double> memory = [];
-	
-	
-	public calgui() {
-		// main frame
+	double memory = 0;
 		
+	public calgui() {
+		
+		// main frame
 		frame = new JFrame("Calculator on Steroids");
 		frame.setLayout(null);
 		frame.setVisible(true);
@@ -36,23 +48,51 @@ public class calgui implements ActionListener {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		
+		// menubar
+		menubar= new JMenuBar();
+		file = new JMenu("File"); 
+		clear = new JMenuItem("Clear");
+		exit = new JMenuItem("Exit");
+		edit = new JMenu("Edit");
+		copy = new JMenuItem("Copy");
+		paste = new JMenuItem("Paste");
+		his = new JMenu("History"); 
+		exp =  new JMenuItem("Export to Text");
+		imp = new JMenuItem("Import to Text");
+		
+		// adding the things to the menubar
+		file.add(clear);
+		clear.addActionListener(this);
+		file.add(exit);
+		exit.addActionListener(this);
+		menubar.add(file);
+		edit.add(copy);
+		copy.addActionListener(this);
+		edit.add(paste);
+		paste.addActionListener(this);
+		menubar.add(edit);
+		his.add(exp);
+		exp.addActionListener(this);
+		his.add(imp);
+		imp.addActionListener(this);
+		menubar.add(his);
+		frame.setJMenuBar(menubar);
+				
 		// operation drop-down menu
 		operations= new JComboBox<String>(ops);
 		operations.setBounds(145, 30, 55, 30);
 		operations.setSelectedIndex(0);
 		operations.addActionListener(this);
-		
-		
+				
 		// text field
 		textField = new JTextField();
 		textField.setBounds(40, 30, 90, 30);
-
-
 		
 		secondField = new JTextField();
 		secondField.setBounds(215, 30, 90, 30);		
-		
+				
 		answerField = new JTextField();
+		answerField.setEditable(false);
 		answerField.setBounds(40, 380, 270, 30);	
 		
 		// button 1
@@ -119,17 +159,7 @@ public class calgui implements ActionListener {
 		btnSub = new JButton("-");
 		btnSub.setBounds(250, 240, 55, 40);
 		btnSub.addActionListener(this);
-		
-//		// button *
-//		btnMul = new JButton("*");
-//		btnMul.setBounds(250, 170, 55, 40);
-//		btnMul.addActionListener(this);
-//		
-//		// button /
-//		btnDiv = new JButton("/");
-//		btnDiv.setBounds(250, 100, 55, 40);
-//		btnDiv.addActionListener(this);
-		
+				
 		// button =
 		btnEq = new JButton("=");
 		btnEq.setBounds(180, 310, 55, 40);
@@ -166,36 +196,26 @@ public class calgui implements ActionListener {
 		btnMemcl.addActionListener(this);
 		
 		textField.addFocusListener((FocusListener) new FocusListener() {
-
-
 			@Override
-			public void focusGained(FocusEvent e) {
-				// TODO Auto-generated method stub
-				
+			public void focusGained(FocusEvent e) {				
 				isFirst = 0;
-				
 			}
-
 			@Override
 			public void focusLost(FocusEvent e) {
-				// TODO Auto-generated method stub
-				
-				
+				// Do nothing								
 			}
-
-	});
+		});
+		
 		secondField.addFocusListener((FocusListener) new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
 				isFirst = 1;
-				
 			}
 			@Override
 			public void focusLost(FocusEvent e) {
 				//Do nothing
 			}
-
-	});
+		});
 		
 		frame.add(textField);
 		frame.add(secondField);
@@ -224,231 +244,298 @@ public class calgui implements ActionListener {
 		frame.add(btnMemcl);
 		frame.add(operations);
 	}
+	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		new calgui();
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
-		// TODO Auto-generated method stub
 		if (e.getSource() == btn0) {
-			if (isFirst == 0) {  
+			if (isFirst == 0) { 
+				input = textField.getText();
 				input = input.concat("0");
 				textField.setText(input);		
 			}
 			else {
+				input2 = secondField.getText();
 				input2 = input2.concat("0");
 				secondField.setText(input2);	
 			}	
 		}
 		if (e.getSource() == btn1) {
 			if (isFirst == 0) {  
+				input = textField.getText();
 				input = input.concat("1");
 				textField.setText(input);		
 			}
 			else {
+				input2 = secondField.getText();
 				input2 = input2.concat("1");
 				secondField.setText(input2);	
 			}	
 		}
 		if (e.getSource() == btn2) {
 			if (isFirst == 0) {  
+				input = textField.getText();
 				input = input.concat("2");
 				textField.setText(input);		
 			}
 			else {
+				input2 = secondField.getText();
 				input2 = input2.concat("2");
 				secondField.setText(input2);	
 			}	
 		}
 		if (e.getSource() == btn3) {
 			if (isFirst == 0) {  
+				input = textField.getText();
 				input = input.concat("3");
 				textField.setText(input);		
 			}
 			else {
+				input2 = secondField.getText();
 				input2 = input2.concat("3");
 				secondField.setText(input2);	
 			}		
 		}
 		if (e.getSource() == btn4) {
 			if (isFirst == 0) {  
+				input = textField.getText();
 				input = input.concat("4");
 				textField.setText(input);		
 			}
 			else {
+				input2 = secondField.getText();
 				input2 = input2.concat("4");
 				secondField.setText(input2);	
 			}
 		}
 		if (e.getSource() == btn5) {
-			if (isFirst == 0) {  
+			if (isFirst == 0) { 
+				input = textField.getText();
 				input = input.concat("5");
 				textField.setText(input);		
 			}
 			else {
+				input2 = secondField.getText();
 				input2 = input2.concat("5");
 				secondField.setText(input2);	
 			}
 		}
 		if (e.getSource() == btn6) {
 			if (isFirst == 0) {  
+				input = textField.getText();
 				input = input.concat("6");
 				textField.setText(input);		
 			}
 			else {
+				input2 = secondField.getText();
 				input2 = input2.concat("6");
 				secondField.setText(input2);	
 			}
 		}
 		if (e.getSource() == btn7) {
 			if (isFirst == 0) {  
+				input = textField.getText();
 				input = input.concat("7");
 				textField.setText(input);		
 			}
 			else {
+				input2 = secondField.getText();
 				input2 = input2.concat("7");
 				secondField.setText(input2);	
 			}	
 		}
 		if (e.getSource() == btn8) {
-			if (isFirst == 0) {  
+			if (isFirst == 0) { 
+				input = textField.getText();
 				input = input.concat("8");
 				textField.setText(input);		
 			}
 			else {
+				input2 = secondField.getText();
 				input2 = input2.concat("8");
 				secondField.setText(input2);	
 			}
 		}
 		if (e.getSource() == btn9) {
 			if (isFirst == 0) {  
+				input = textField.getText();
 				input = input.concat("9");
 				textField.setText(input);		
 			}
 			else {
+				input2 = secondField.getText();
 				input2 = input2.concat("9");
 				secondField.setText(input2);	
 			}
 		}
 		if (e.getSource() == btnDot) {
 			if (isFirst == 0) {  
+				input = textField.getText();
 				input = input.concat(".");
 				textField.setText(input);		
 			}
 			else {
+				input2 = secondField.getText();
 				input2 = input2.concat(".");
 				secondField.setText(input2);	
 			}
 		}
 		if (e.getSource() == btnAdd) {
 			if (isFirst == 0) {  
-				input = input.concat("+");
+				input = textField.getText();
+				input = ("+").concat(input);
 				textField.setText(input);		
 			}
 			else {
-				input2 = input2.concat("+");
+				input2 = secondField.getText();
+				input2 = ("+").concat(input2);
 				secondField.setText(input2);	
 			}	
 		}
 		if (e.getSource() == btnSub) {
 			if (isFirst == 0) {  
-				input = input.concat("-");
+				input = textField.getText();
+				input = ("-").concat(input);
 				textField.setText(input);		
 			}
 			else {
-				input2 = input2.concat("-");
+				input2 = secondField.getText();
+				input2 = ("-").concat(input2);
 				secondField.setText(input2);	
 			}	
 		}
-		if (e.getSource() == btnDel) {
-			
+		if (e.getSource() == btnDel) {			
 			if (isFirst == 0) {  
 				if (input == "") {
                 // do nothing
 				} else {
-                input = input.substring(0, input.length() - 1);
-                textField.setText(input);
-	
+					input = textField.getText();
+					input = input.substring(0, input.length() - 1);
+					textField.setText(input);
 				}
-			}
-			else {
+			} else {
 				if (input2 == "") {
 	                // do nothing
 					} else {
-	                input2 = input2.substring(0, input2.length() - 1);
-	                secondField.setText(input2);
-		
+						input2 = secondField.getText();
+						input2 = input2.substring(0, input2.length() - 1);
+						secondField.setText(input2);		
 				}
-			}
-					
+			}					
 		}
-		if (e.getSource( )== btnClr) {
-			if (isFirst == 0) { 
+		if (e.getSource( )== btnClr) {			
 			input="";
 			textField.setText(input);									
-			} else {
-                input2 = "";
-                secondField.setText(input2);
+            input2 = "";
+            secondField.setText(input2);
+            answerField.setText("");
+		}		
+		if (e.getSource() == btnMplus) {
+			try {
+				memory = memory +  Double.parseDouble(answerField.getText());
+			} catch (Exception err) {
+				// Do nothing	
 			}
 		}
-
-		
-		if (e.getSource() == btnMplus) {
-			input = input.concat("M+");
-			textField.setText(input);	
-		}
 		if (e.getSource() == btnMminus) {
-			input = input.concat("M-");
-			textField.setText(input);	
+			try {
+				memory = memory - Double.parseDouble(answerField.getText());
+			} catch (Exception err) {
+				// Do nothing	
+			}
 		}
 		if (e.getSource() == btnMrec) {
-			input = input.concat("Mr");
-			textField.setText(input);	
+			answerField.setText(Double.toString(memory));
 		}
 		if (e.getSource() == btnMemcl) {
-			input = input.concat("Mclear");
-			textField.setText(input);	
+			memory = 0.0;
 		}
 		if (e.getSource() == operations) {
 			value = operations.getSelectedItem().toString();
 		}
 		if (e.getSource() == btnEq) {
+			input = textField.getText();
+			input2= secondField.getText();		
 			answer = eval(input, input2, value);
 			answerField.setText(answer);
 		}
-
-
-		
-			
-		
-		}// Action formed
-		public static String eval(String x, String y, String operation) {
-			double num1 = Double.parseDouble(x);
-			double num2 = Double.parseDouble(y);
-			double sagot = 0; 
-	
-			switch (operation) {
-				case "+":
-					sagot = num1 + num2;
-					return Double.toString(sagot);
-				case "-":
-					sagot = num1 - num2;
-					return Double.toString(sagot);
-				case "*":
-					sagot = num1 * num2;
-					return Double.toString(sagot);
-				case "/":
-					sagot = num1 / num2;
-					return Double.toString(sagot);
-				default:
-					return ""; 
-									
-			}
-			
+		if (e.getSource() == clear) {
+			input="";
+			input2="";
+			answerField.setText("");
+			textField.setText("");
+			secondField.setText("");
 		}
-
+		if (e.getSource() == exit) {
+			frame.dispose();			
+		}
+		if (e.getSource() == copy) {
+			copied=answerField.getText();			
+		}
+		if (e.getSource() == paste) {
+			if (isFirst == 0) {
+				input = copied;
+				textField.setText(input);
+			}
+			if (isFirst == 1)
+			{				
+				input2 = copied; 
+				secondField.setText(input2);
+			}
+		}
+		if (e.getSource() == exp) {
+			answerField.setText("Unimplemented feature");			
+		}
+		if (e.getSource() == imp) {
+			answerField.setText("Unimplemented feature");			
+		}		
+	}// Action formed
+	
+	public static String eval(String x, String y, String operation) {
+		double num1, num2;
+		num1 = 0.0;
+		num2 = 0.0;
+		double sagot = 0.0; 
+		
+		if (x != "") {
+			try {
+			 num1 = Double.parseDouble(x); 	
+			 
+			} catch (Exception e) {
+				return "Syntax Error";
+			}
+		}
+		if (y != "") {
+			try {
+				 num2 = Double.parseDouble(y); 	
+				 
+				} catch (Exception e) {
+					return "Syntax Error";
+				}
+		}
+			
+		switch (operation) {
+			case "+":
+				sagot = num1 + num2;
+				return Double.toString(sagot);
+			case "-":
+				sagot = num1 - (num2);
+				return Double.toString(sagot);
+			case "*":
+				sagot = num1 * num2;
+				return Double.toString(sagot);
+			case "/":
+				sagot = num1 / num2;
+				return Double.toString(sagot);
+			default:
+				return ""; 
+								
+		}
+		
 	}
+
+}
 
 	
